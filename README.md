@@ -1,4 +1,4 @@
-![alt text](https://github.com/staledonuts/Deaddonut-se/blob/main/docs/images/DeadDonuts-Corp-banner.png "DeadDonuts Corp")
+![alt text](https://github.com/staledonuts/Deaddonut-se/blob/main/DeadDonuts-Corp-banner.png "DeadDonuts Corp")
 
 # BTweens v0.1 - Initial release.
 
