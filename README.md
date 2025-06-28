@@ -1,10 +1,11 @@
 ![alt text](https://github.com/staledonuts/Deaddonut-se/blob/main/docs/images/DeadDonuts-Corp-banner.png "DeadDonuts Corp")
 
-# BTweens v0.1
+# BTweens v0.1 - Initial release.
+
 Note: This is a early version package, currently being used in a personal project. You are welcome to contribute and add to the package if you want. the only rule is to keep it slim and simple.
 
 Async Tween Engine for Unity
-A lightweight, and easy-to-use asynchronous tweening engine for Unity, built on top of UniTask. This package provides a extension-method-based API to animate properties of GameObjects and UI elements with minimal setup.
+A lightweight, and easy-to-use asynchronous tweening engine for Unity, built on top of [UniTask](https://github.com/Cysharp/UniTask). This package provides a extension-method-based API to animate properties of GameObjects and UI elements with minimal setup.
 
 Core Features
 Async: Leverages Cysharp.Threading.Tasks (UniTask) for non-blocking, efficient animations.
