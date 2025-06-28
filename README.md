@@ -1,2 +1,2 @@
 # BTweens
-A small Tweener for unity based using UniTask.
+A small Tweener for unity using UniTask.
