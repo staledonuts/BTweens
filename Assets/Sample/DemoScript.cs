@@ -14,8 +14,6 @@ public class DemoScript : MonoBehaviour
     [Tooltip("The button that triggers the show/hide animation.")]
     [SerializeField] private Button _toggleButton;
 
-    [SerializeField] private Canvas _mainCanvas;
-
     [Header("Animation Settings")]
     [Tooltip("The duration of the slide animation in seconds.")]
     [SerializeField] private float _animationDuration = 0.4f;
@@ -59,22 +57,14 @@ public class DemoScript : MonoBehaviour
             // If the panel should be visible, tween it back to its original on-screen position.
             // We use the TweenAnchoredPosition extension method from your package.
             // We also use the OutCubic ease for a smooth deceleration effect.
-            _dialoguePanel.TweenAnchoredPosition(
-                _initialAnchoredPosition, 
-                _animationDuration, 
-                easeFunction: BTween.Ease.OutCubic
-            );
+            _dialoguePanel.TweenAnchoredPosition( _initialAnchoredPosition, _animationDuration, easeFunction: BTween.Ease.OutCubic );
         }
         else
         {
             // If the panel should be hidden, tween it to the left, just off-screen.
             // We use the TweenToOffScreen extension method, which is perfect for this.
             // We use the InCubic ease for a smooth acceleration effect as it leaves the screen.
-            _dialoguePanel.TweenToOffScreen(
-                OffScreenDirection.Left, 
-                _animationDuration, 
-                easeFunction: BTween.Ease.InCubic
-            );
+            _dialoguePanel.TweenToOffScreen( OffScreenDirection.Left, _animationDuration, easeFunction: BTween.Ease.InCubic );
         }
     }
 
