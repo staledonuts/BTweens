@@ -1,0 +1,507 @@
+fileFormatVersion: 2
+guid: 6b889068d4ddee30b9c0e075b82e8ddc
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -5397700191868718584
+    second: DeadDonuts Corp_0
+  - first:
+      213: -1372744616831213622
+    second: DeadDonuts Corp_1
+  - first:
+      213: 8630494609035291893
+    second: DeadDonuts Corp_2
+  - first:
+      213: -6359108244420385060
+    second: DeadDonuts Corp_3
+  - first:
+      213: 4907299237920599811
+    second: DeadDonuts Corp_4
+  - first:
+      213: -5420454950518246802
+    second: DeadDonuts Corp_5
+  - first:
+      213: -1105311309095160698
+    second: DeadDonuts Corp_6
+  - first:
+      213: -4962347919295600740
+    second: DeadDonuts Corp_7
+  - first:
+      213: -6726017490671855999
+    second: DeadDonuts Corp_8
+  - first:
+      213: -3473114234544978709
+    second: DeadDonuts Corp_9
+  - first:
+      213: -8102626527929730694
+    second: DeadDonuts Corp_10
+  - first:
+      213: -2075624278580520682
+    second: DeadDonuts Corp_11
+  - first:
+      213: 7716339703801690571
+    second: DeadDonuts Corp_12
+  - first:
+      213: -7675118887065513138
+    second: DeadDonuts Corp_13
+  - first:
+      213: 7321311191717962939
+    second: DeadDonuts Corp_14
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 16
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: DeadDonuts Corp_0
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 237
+        width: 30
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8027b9316448715b0800000000000000
+      internalID: -5397700191868718584
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DeadDonuts Corp_1
+      rect:
+        serializedVersion: 2
+        x: 61
+        y: 237
+        width: 30
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: acf127a4b0803fce0800000000000000
+      internalID: -1372744616831213622
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DeadDonuts Corp_2
+      rect:
+        serializedVersion: 2
+        x: 93
+        y: 237
+        width: 30
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5fce87fde1da5c770800000000000000
+      internalID: 8630494609035291893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DeadDonuts Corp_3
+      rect:
+        serializedVersion: 2
+        x: 125
+        y: 237
+        width: 30
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd6a0136eb8efb7a0800000000000000
+      internalID: -6359108244420385060
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DeadDonuts Corp_4
+      rect:
+        serializedVersion: 2
+        x: 157
+        y: 237
+        width: 30
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30f6dca28aa3a1440800000000000000
+      internalID: 4907299237920599811
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DeadDonuts Corp_5
+      rect:
+        serializedVersion: 2
+        x: 189
+        y: 237
+        width: 30
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e623a59f0fca6c4b0800000000000000
+      internalID: -5420454950518246802
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DeadDonuts Corp_6
+      rect:
+        serializedVersion: 2
+        x: 221
+        y: 237
+        width: 30
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6843927783529a0f0800000000000000
+      internalID: -1105311309095160698
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DeadDonuts Corp_7
+      rect:
+        serializedVersion: 2
+        x: 253
+        y: 237
+        width: 30
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c97ac7aebd2322bb0800000000000000
+      internalID: -4962347919295600740
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DeadDonuts Corp_8
+      rect:
+        serializedVersion: 2
+        x: 285
+        y: 237
+        width: 26
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 186907b6ab268a2a0800000000000000
+      internalID: -6726017490671855999
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DeadDonuts Corp_9
+      rect:
+        serializedVersion: 2
+        x: 313
+        y: 237
+        width: 30
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be4089941050dcfc0800000000000000
+      internalID: -3473114234544978709
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DeadDonuts Corp_10
+      rect:
+        serializedVersion: 2
+        x: 361
+        y: 237
+        width: 30
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a7977173a10bd8f80800000000000000
+      internalID: -8102626527929730694
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DeadDonuts Corp_11
+      rect:
+        serializedVersion: 2
+        x: 393
+        y: 237
+        width: 30
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 619180c37b6e133e0800000000000000
+      internalID: -2075624278580520682
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DeadDonuts Corp_12
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 237
+        width: 30
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc9b753e312f51b60800000000000000
+      internalID: 7716339703801690571
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DeadDonuts Corp_13
+      rect:
+        serializedVersion: 2
+        x: 457
+        y: 229
+        width: 30
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e43919769008c7590800000000000000
+      internalID: -7675118887065513138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DeadDonuts Corp_14
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 68
+        width: 122
+        height: 143
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb4e0782db58a9560800000000000000
+      internalID: 7321311191717962939
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      DeadDonuts Corp_0: -5397700191868718584
+      DeadDonuts Corp_1: -1372744616831213622
+      DeadDonuts Corp_10: -8102626527929730694
+      DeadDonuts Corp_11: -2075624278580520682
+      DeadDonuts Corp_12: 7716339703801690571
+      DeadDonuts Corp_13: -7675118887065513138
+      DeadDonuts Corp_14: 7321311191717962939
+      DeadDonuts Corp_2: 8630494609035291893
+      DeadDonuts Corp_3: -6359108244420385060
+      DeadDonuts Corp_4: 4907299237920599811
+      DeadDonuts Corp_5: -5420454950518246802
+      DeadDonuts Corp_6: -1105311309095160698
+      DeadDonuts Corp_7: -4962347919295600740
+      DeadDonuts Corp_8: -6726017490671855999
+      DeadDonuts Corp_9: -3473114234544978709
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

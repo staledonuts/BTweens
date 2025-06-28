@@ -9,14 +9,16 @@ public class DemoScript : MonoBehaviour
 {
     [Header("UI References")]
     [Tooltip("The main UI panel for the dialogue, which will be moved.")]
-    [SerializeField] private RectTransform dialoguePanel;
+    [SerializeField] private RectTransform _dialoguePanel;
 
     [Tooltip("The button that triggers the show/hide animation.")]
-    [SerializeField] private Button toggleButton;
+    [SerializeField] private Button _toggleButton;
+
+    [SerializeField] private Canvas _mainCanvas;
 
     [Header("Animation Settings")]
     [Tooltip("The duration of the slide animation in seconds.")]
-    [SerializeField] private float animationDuration = 0.4f;
+    [SerializeField] private float _animationDuration = 0.4f;
 
     // A variable to store the initial on-screen position of the dialogue panel.
     private Vector2 _initialAnchoredPosition;
@@ -30,17 +32,17 @@ public class DemoScript : MonoBehaviour
     /// </summary>
     private void Awake()
     {
-        if (dialoguePanel == null || toggleButton == null)
+        if (_dialoguePanel == null || _toggleButton == null)
         {
             Debug.LogError("DialogueUIView: Please assign the Dialogue Panel and Toggle Button in the Inspector.", this);
             return;
         }
 
         // Store the starting on-screen position of the panel.
-        _initialAnchoredPosition = dialoguePanel.anchoredPosition;
+        _initialAnchoredPosition = _dialoguePanel.anchoredPosition;
 
         // Add a listener to the button's onClick event, so our TogglePanel method is called when clicked.
-        toggleButton.onClick.AddListener(TogglePanel);
+        _toggleButton.onClick.AddListener(TogglePanel);
     }
 
     /// <summary>
@@ -57,9 +59,9 @@ public class DemoScript : MonoBehaviour
             // If the panel should be visible, tween it back to its original on-screen position.
             // We use the TweenAnchoredPosition extension method from your package.
             // We also use the OutCubic ease for a smooth deceleration effect.
-            dialoguePanel.TweenAnchoredPosition(
+            _dialoguePanel.TweenAnchoredPosition(
                 _initialAnchoredPosition, 
-                animationDuration, 
+                _animationDuration, 
                 easeFunction: BTween.Ease.OutCubic
             );
         }
@@ -68,9 +70,9 @@ public class DemoScript : MonoBehaviour
             // If the panel should be hidden, tween it to the left, just off-screen.
             // We use the TweenToOffScreen extension method, which is perfect for this.
             // We use the InCubic ease for a smooth acceleration effect as it leaves the screen.
-            dialoguePanel.TweenToOffScreen(
+            _dialoguePanel.TweenToOffScreen(
                 OffScreenDirection.Left, 
-                animationDuration, 
+                _animationDuration, 
                 easeFunction: BTween.Ease.InCubic
             );
         }
@@ -81,9 +83,9 @@ public class DemoScript : MonoBehaviour
     /// </summary>
     private void OnDestroy()
     {
-        if (toggleButton != null)
+        if (_toggleButton != null)
         {
-            toggleButton.onClick.RemoveListener(TogglePanel);
+            _toggleButton.onClick.RemoveListener(TogglePanel);
         }
     }
 }
