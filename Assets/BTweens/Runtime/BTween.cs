@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Cysharp.Threading.Tasks.Triggers;
 using UnityEngine;
 
 /// <summary>
@@ -10,7 +11,7 @@ using UnityEngine;
 /// </summary>
 public static class BTween
 {
-    private static readonly Dictionary<Tuple<object, string>, CancellationTokenSource> _activeTweens = new Dictionary<Tuple<object, string>, CancellationTokenSource>();
+    private static readonly Dictionary<Tuple<object, string>, Tuple<CancellationTokenSource, CancellationTokenSource>> _activeTweens = new Dictionary<Tuple<object, string>, Tuple<CancellationTokenSource, CancellationTokenSource>>();
 
     private static Tuple<object, string> CreateKey(object owner, string tweenIdentifierTag)
     {
@@ -122,29 +123,28 @@ public static class BTween
             return UniTask.CompletedTask;
         }
 
-        var cts = new CancellationTokenSource();
-        // If the owner is a Unity Object, link the cancellation token to its lifetime.
+        var mainCts = new CancellationTokenSource();
+        var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(mainCts.Token);
+
         if (owner is Component ownerAsComponent)
         {
-            cts.RegisterRaiseCancelOnDestroy(ownerAsComponent);
+            mainCts.RegisterRaiseCancelOnDestroy(ownerAsComponent);
         }
         else if (owner is GameObject ownerAsGameObject)
         {
-            cts.RegisterRaiseCancelOnDestroy(ownerAsGameObject);
+            mainCts.RegisterRaiseCancelOnDestroy(ownerAsGameObject);
         }
 
-        _activeTweens[key] = cts;
+        _activeTweens[key] = Tuple.Create(linkedCts, mainCts);
         
-        return TweenValueAsync(key, startValue, endValue, duration, setter, interpolator, onComplete, easeFunction, onCompleteDelay, cts.Token);
+        return TweenValueAsync(key, startValue, endValue, duration, setter, interpolator, onComplete, easeFunction, onCompleteDelay, linkedCts);
     }
     
     private static void StopTweenForKey(Tuple<object, string> key)
     {
-        if (_activeTweens.TryGetValue(key, out var cts))
+        if (_activeTweens.TryGetValue(key, out var context))
         {
-            cts.Cancel();
-            cts.Dispose();
-            _activeTweens.Remove(key);
+            context.Item1.Cancel();
         }
     }
 
@@ -163,13 +163,14 @@ public static class BTween
     /// The core asynchronous loop that runs a tween every frame until it completes or is cancelled.
     /// </summary>
     private static async UniTask TweenValueAsync<T>(
-        Tuple<object, string> key, T from, T to, float duration,
-        Action<T> setter, Func<T, T, float, T> interpolator,
-        Action onComplete, Func<float, float> easeFunction,
-        float onCompleteDelay, CancellationToken cancellationToken)
+    Tuple<object, string> key, T from, T to, float duration,
+    Action<T> setter, Func<T, T, float, T> interpolator,
+    Action onComplete, Func<float, float> easeFunction,
+    float onCompleteDelay, CancellationTokenSource cts)
     {
         float elapsedTime = 0f;
         easeFunction ??= Ease.Linear;
+        var cancellationToken = cts.Token;
 
         try
         {
@@ -203,10 +204,12 @@ public static class BTween
         }
         finally
         {
-            if (_activeTweens.ContainsKey(key))
+            if (_activeTweens.TryGetValue(key, out var context) && context.Item1 == cts)
             {
                 _activeTweens.Remove(key);
             }
+            
+            cts.Dispose();
         }
     }
 
@@ -215,13 +218,14 @@ public static class BTween
     /// </summary>
     public static void StopAndClearAllManagedTweens()
     {
-        var keys = new List<Tuple<object, string>>(_activeTweens.Keys);
-        foreach (var key in keys)
+        var tweensToStop = new List<Tuple<CancellationTokenSource, CancellationTokenSource>>(_activeTweens.Values);
+        
+        foreach (var context in tweensToStop)
         {
-            StopTweenForKey(key);
+            context.Item1.Cancel();
         }
-        _activeTweens.Clear();
     }
+
 
     /// <summary>
     /// A static class containing a collection of common easing functions to control the rate of change of a tween.
