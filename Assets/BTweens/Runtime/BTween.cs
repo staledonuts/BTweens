@@ -1,0 +1,356 @@
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
+
+/// <summary>
+/// A static core engine for creating, managing, and executing asynchronous tweens using UniTask.
+/// This class handles tween lifecycle, automatic cancellation on object destruction, and provides a suite of easing functions.
+/// </summary>
+public static class BTween
+{
+    private static readonly Dictionary<Tuple<object, string>, CancellationTokenSource> _activeTweens = new Dictionary<Tuple<object, string>, CancellationTokenSource>();
+
+    private static Tuple<object, string> CreateKey(object owner, string tweenIdentifierTag)
+    {
+        return Tuple.Create(owner, tweenIdentifierTag ?? string.Empty);
+    }
+
+    /// <summary>
+    /// Starts a tween for a float value.
+    /// </summary>
+    /// <param name="owner">The object that owns this tween. Used for identification and automatic cancellation on destruction.</param>
+    /// <param name="tweenIdentifierTag">A string tag to uniquely identify this tween on the owner object.</param>
+    /// <param name="setter">The action that applies the tweened value each frame.</param>
+    /// <param name="startValue">The starting value of the tween.</param>
+    /// <param name="endValue">The target value of the tween.</param>
+    /// <param name="duration">The duration of the tween in seconds.</param>
+    /// <param name="onComplete">An optional action to invoke when the tween completes.</param>
+    /// <param name="easeFunction">The easing function to use for the tween's progression.</param>
+    /// <param name="onCompleteDelay">An optional delay in seconds before invoking the onComplete action.</param>
+    /// <returns>A UniTask that completes when the tween is finished or cancelled.</returns>
+    public static UniTask Float(object owner, string tweenIdentifierTag, Action<float> setter, float startValue, float endValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    {
+        return StartTween(owner, tweenIdentifierTag, startValue, endValue, duration, setter, Mathf.LerpUnclamped, onComplete, easeFunction, onCompleteDelay);
+    }
+
+    /// <summary>
+    /// Starts a tween for a Vector2 value.
+    /// </summary>
+    /// <param name="owner">The object that owns this tween. Used for identification and automatic cancellation on destruction.</param>
+    /// <param name="tweenIdentifierTag">A string tag to uniquely identify this tween on the owner object.</param>
+    /// <param name="setter">The action that applies the tweened value each frame.</param>
+    /// <param name="startValue">The starting value of the tween.</param>
+    /// <param name="endValue">The target value of the tween.</param>
+    /// <param name="duration">The duration of the tween in seconds.</param>
+    /// <param name="onComplete">An optional action to invoke when the tween completes.</param>
+    /// <param name="easeFunction">The easing function to use for the tween's progression.</param>
+    /// <param name="onCompleteDelay">An optional delay in seconds before invoking the onComplete action.</param>
+    /// <returns>A UniTask that completes when the tween is finished or cancelled.</returns>
+    public static UniTask Vector2(object owner, string tweenIdentifierTag, Action<Vector2> setter, Vector2 startValue, Vector2 endValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    {
+        return StartTween(owner, tweenIdentifierTag, startValue, endValue, duration, setter, UnityEngine.Vector2.LerpUnclamped, onComplete, easeFunction, onCompleteDelay);
+    }
+
+    /// <summary>
+    /// Starts a tween for a Vector3 value.
+    /// </summary>
+    /// <param name="owner">The object that owns this tween. Used for identification and automatic cancellation on destruction.</param>
+    /// <param name="tweenIdentifierTag">A string tag to uniquely identify this tween on the owner object.</param>
+    /// <param name="setter">The action that applies the tweened value each frame.</param>
+    /// <param name="startValue">The starting value of the tween.</param>
+    /// <param name="endValue">The target value of the tween.</param>
+    /// <param name="duration">The duration of the tween in seconds.</param>
+    /// <param name="onComplete">An optional action to invoke when the tween completes.</param>
+    /// <param name="easeFunction">The easing function to use for the tween's progression.</param>
+    /// <param name="onCompleteDelay">An optional delay in seconds before invoking the onComplete action.</param>
+    /// <returns>A UniTask that completes when the tween is finished or cancelled.</returns>
+    public static UniTask Vector3(object owner, string tweenIdentifierTag, Action<Vector3> setter, Vector3 startValue, Vector3 endValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    {
+        return StartTween(owner, tweenIdentifierTag, startValue, endValue, duration, setter, UnityEngine.Vector3.LerpUnclamped, onComplete, easeFunction, onCompleteDelay);
+    }
+
+    /// <summary>
+    /// Starts a tween for a Quaternion value. Uses Slerp for correct rotational interpolation.
+    /// </summary>
+    /// <param name="owner">The object that owns this tween. Used for identification and automatic cancellation on destruction.</param>
+    /// <param name="tweenIdentifierTag">A string tag to uniquely identify this tween on the owner object.</param>
+    /// <param name="setter">The action that applies the tweened value each frame.</param>
+    /// <param name="startValue">The starting value of the tween.</param>
+    /// <param name="endValue">The target value of the tween.</param>
+    /// <param name="duration">The duration of the tween in seconds.</param>
+    /// <param name="onComplete">An optional action to invoke when the tween completes.</param>
+    /// <param name="easeFunction">The easing function to use for the tween's progression.</param>
+    /// <param name="onCompleteDelay">An optional delay in seconds before invoking the onComplete action.</param>
+    /// <returns>A UniTask that completes when the tween is finished or cancelled.</returns>
+    public static UniTask Quaternion(object owner, string tweenIdentifierTag, Action<Quaternion> setter, Quaternion startValue, Quaternion endValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    {
+        return StartTween(owner, tweenIdentifierTag, startValue, endValue, duration, setter, UnityEngine.Quaternion.SlerpUnclamped, onComplete, easeFunction, onCompleteDelay);
+    }
+
+    /// <summary>
+    /// Starts a tween for a Color value.
+    /// </summary>
+    /// <param name="owner">The object that owns this tween. Used for identification and automatic cancellation on destruction.</param>
+    /// <param name="tweenIdentifierTag">A string tag to uniquely identify this tween on the owner object.</param>
+    /// <param name="setter">The action that applies the tweened value each frame.</param>
+    /// <param name="startValue">The starting value of the tween.</param>
+    /// <param name="endValue">The target value of the tween.</param>
+    /// <param name="duration">The duration of the tween in seconds.</param>
+    /// <param name="onComplete">An optional action to invoke when the tween completes.</param>
+    /// <param name="easeFunction">The easing function to use for the tween's progression.</param>
+    /// <param name="onCompleteDelay">An optional delay in seconds before invoking the onComplete action.</param>
+    /// <returns>A UniTask that completes when the tween is finished or cancelled.</returns>
+    public static UniTask Color(object owner, string tweenIdentifierTag, Action<Color> setter, Color startValue, Color endValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    {
+        return StartTween(owner, tweenIdentifierTag, startValue, endValue, duration, setter, UnityEngine.Color.LerpUnclamped, onComplete, easeFunction, onCompleteDelay);
+    }
+
+    /// <summary>
+    /// The internal generic method that sets up and starts any tween. It handles tween cancellation, lifecycle management, and invokes the async tweening logic.
+    /// </summary>
+    private static UniTask StartTween<T>(object owner, string tweenIdentifierTag, T startValue, T endValue, float duration, Action<T> setter, Func<T, T, float, T> interpolator, Action onComplete, Func<float, float> easeFunction, float onCompleteDelay)
+    {
+        var key = CreateKey(owner, tweenIdentifierTag);
+        StopTweenForKey(key);
+
+        if (duration <= 0)
+        {
+            setter(endValue);
+            onComplete?.Invoke();
+            return UniTask.CompletedTask;
+        }
+
+        var cts = new CancellationTokenSource();
+        // If the owner is a Unity Object, link the cancellation token to its lifetime.
+        if (owner is Component ownerAsComponent)
+        {
+            cts.RegisterRaiseCancelOnDestroy(ownerAsComponent);
+        }
+        else if (owner is GameObject ownerAsGameObject)
+        {
+            cts.RegisterRaiseCancelOnDestroy(ownerAsGameObject);
+        }
+
+        _activeTweens[key] = cts;
+        
+        return TweenValueAsync(key, startValue, endValue, duration, setter, interpolator, onComplete, easeFunction, onCompleteDelay, cts.Token);
+    }
+    
+    private static void StopTweenForKey(Tuple<object, string> key)
+    {
+        if (_activeTweens.TryGetValue(key, out var cts))
+        {
+            cts.Cancel();
+            cts.Dispose();
+            _activeTweens.Remove(key);
+        }
+    }
+
+    /// <summary>
+    /// Manually stops a specific tween on a given object, identified by its tag.
+    /// </summary>
+    /// <param name="owner">The owner object of the tween to stop.</param>
+    /// <param name="tweenIdentifierTag">The identifier tag of the tween to stop.</param>
+    public static void StopTween(object owner, string tweenIdentifierTag)
+    {
+        var key = CreateKey(owner, tweenIdentifierTag);
+        StopTweenForKey(key);
+    }
+
+    /// <summary>
+    /// The core asynchronous loop that runs a tween every frame until it completes or is cancelled.
+    /// </summary>
+    private static async UniTask TweenValueAsync<T>(
+        Tuple<object, string> key, T from, T to, float duration,
+        Action<T> setter, Func<T, T, float, T> interpolator,
+        Action onComplete, Func<float, float> easeFunction,
+        float onCompleteDelay, CancellationToken cancellationToken)
+    {
+        float elapsedTime = 0f;
+        easeFunction ??= Ease.Linear;
+
+        try
+        {
+            while (elapsedTime < duration)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                elapsedTime += Time.deltaTime;
+                float progress = Mathf.Clamp01(elapsedTime / duration);
+                float easedProgress = easeFunction(progress);
+                
+                setter(interpolator(from, to, easedProgress));
+                
+                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
+            }
+
+            setter(to);
+
+            if (onComplete != null)
+            {
+                if (onCompleteDelay > 0f)
+                {
+                    await UniTask.Delay(TimeSpan.FromSeconds(onCompleteDelay), ignoreTimeScale: false, delayTiming: PlayerLoopTiming.Update, cancellationToken: cancellationToken);
+                }
+                onComplete.Invoke();
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // This is expected when a tween is stopped or the owner is destroyed.
+        }
+        finally
+        {
+            if (_activeTweens.ContainsKey(key))
+            {
+                _activeTweens.Remove(key);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Stops and clears all tweens currently managed by this system. Useful for scene cleanup.
+    /// </summary>
+    public static void StopAndClearAllManagedTweens()
+    {
+        var keys = new List<Tuple<object, string>>(_activeTweens.Keys);
+        foreach (var key in keys)
+        {
+            StopTweenForKey(key);
+        }
+        _activeTweens.Clear();
+    }
+
+    /// <summary>
+    /// A static class containing a collection of common easing functions to control the rate of change of a tween.
+    /// </summary>
+    public static class Ease
+    {
+        /// <summary>A linear progression with no acceleration.</summary>
+        /// <param name="p">The normalized progress of the tween (0 to 1).</param>
+        /// <returns>The eased progress.</returns>
+        public static float Linear(float p) => p;
+        /// <summary>Ease-in with quadratic acceleration.</summary>
+        /// <param name="p">The normalized progress of the tween (0 to 1).</param>
+        /// <returns>The eased progress.</returns>
+        public static float InQuad(float p) => p * p;
+        /// <summary>Ease-out with quadratic deceleration.</summary>
+        /// <param name="p">The normalized progress of the tween (0 to 1).</param>
+        /// <returns>The eased progress.</returns>
+        public static float OutQuad(float p) => p * (2 - p);
+        /// <summary>Ease-in and ease-out with quadratic acceleration and deceleration.</summary>
+        /// <param name="p">The normalized progress of the tween (0 to 1).</param>
+        /// <returns>The eased progress.</returns>
+        public static float InOutQuad(float p) => p < 0.5f ? 2 * p * p : -1 + (4 - 2 * p) * p;
+        /// <summary>Ease-in with cubic acceleration.</summary>
+        /// <param name="p">The normalized progress of the tween (0 to 1).</param>
+        /// <returns>The eased progress.</returns>
+        public static float InCubic(float p) => p * p * p;
+        /// <summary>Ease-out with cubic deceleration.</summary>
+        /// <param name="p">The normalized progress of the tween (0 to 1).</param>
+        /// <returns>The eased progress.</returns>
+        public static float OutCubic(float p) => (--p) * p * p + 1;
+        /// <summary>Ease-in and ease-out with cubic acceleration and deceleration.</summary>
+        /// <param name="p">The normalized progress of the tween (0 to 1).</param>
+        /// <returns>The eased progress.</returns>
+        public static float InOutCubic(float p) => p < 0.5f ? 4 * p * p * p : (p - 1) * (2 * p - 2) * (2 * p - 2) + 1;
+        /// <summary>Ease-in with sinusoidal acceleration.</summary>
+        /// <param name="t">The normalized progress of the tween (0 to 1).</param>
+        /// <returns>The eased progress.</returns>
+        public static float InSine(float t) => 1 - (float)Math.Cos(t * Math.PI / 2);
+		/// <summary>Ease-out with sinusoidal deceleration.</summary>
+        /// <param name="t">The normalized progress of the tween (0 to 1).</param>
+        /// <returns>The eased progress.</returns>
+		public static float OutSine(float t) => (float)Math.Sin(t * Math.PI / 2);
+		/// <summary>Ease-in and ease-out with sinusoidal acceleration and deceleration.</summary>
+        /// <param name="t">The normalized progress of the tween (0 to 1).</param>
+        /// <returns>The eased progress.</returns>
+		public static float InOutSine(float t) => (float)(Math.Cos(t * Math.PI) - 1) / -2;
+        /// <summary>Ease-in with quintic acceleration.</summary>
+        /// <param name="t">The normalized progress of the tween (0 to 1).</param>
+        /// <returns>The eased progress.</returns>
+        public static float InQuint(float t) => t * t * t * t * t;
+		/// <summary>Ease-out with quintic deceleration.</summary>
+        /// <param name="t">The normalized progress of the tween (0 to 1).</param>
+        /// <returns>The eased progress.</returns>
+		public static float OutQuint(float t) => 1 - InQuint(1 - t);
+		/// <summary>Ease-in and ease-out with quintic acceleration and deceleration.</summary>
+        /// <param name="t">The normalized progress of the tween (0 to 1).</param>
+        /// <returns>The eased progress.</returns>
+		public static float InOutQuint(float t)
+		{
+			if (t < 0.5) return InQuint(t * 2) / 2;
+			return 1 - InQuint((1 - t) * 2) / 2;
+		}
+        /// <summary>Ease-in with quartic acceleration.</summary>
+        /// <param name="t">The normalized progress of the tween (0 to 1).</param>
+        /// <returns>The eased progress.</returns>
+        public static float InQuart(float t) => t * t * t * t;
+		/// <summary>Ease-out with quartic deceleration.</summary>
+        /// <param name="t">The normalized progress of the tween (0 to 1).</param>
+        /// <returns>The eased progress.</returns>
+		public static float OutQuart(float t) => 1 - InQuart(1 - t);
+		/// <summary>Ease-in and ease-out with quartic acceleration and deceleration.</summary>
+        /// <param name="t">The normalized progress of the tween (0 to 1).</param>
+        /// <returns>The eased progress.</returns>
+		public static float InOutQuart(float t)
+		{
+			if (t < 0.5) return InQuart(t * 2) / 2;
+			return 1 - InQuart((1 - t) * 2) / 2;
+		}
+        /// <summary>Ease-in with exponential acceleration.</summary>
+        /// <param name="t">The normalized progress of the tween (0 to 1).</param>
+        /// <returns>The eased progress.</returns>
+        public static float InExpo(float t) => (float)Math.Pow(2, 10 * (t - 1));
+		/// <summary>Ease-out with exponential deceleration.</summary>
+        /// <param name="t">The normalized progress of the tween (0 to 1).</param>
+        /// <returns>The eased progress.</returns>
+		public static float OutExpo(float t) => 1 - InExpo(1 - t);
+		/// <summary>Ease-in and ease-out with exponential acceleration and deceleration.</summary>
+        /// <param name="t">The normalized progress of the tween (0 to 1).</param>
+        /// <returns>The eased progress.</returns>
+		public static float InOutExpo(float t)
+		{
+			if (t < 0.5) return InExpo(t * 2) / 2;
+			return 1 - InExpo((1 - t) * 2) / 2;
+		}
+		/// <summary>Ease-in with circular acceleration.</summary>
+        /// <param name="t">The normalized progress of the tween (0 to 1).</param>
+        /// <returns>The eased progress.</returns>
+		public static float InCirc(float t) => -((float)Math.Sqrt(1 - t * t) - 1);
+		/// <summary>Ease-out with circular deceleration.</summary>
+        /// <param name="t">The normalized progress of the tween (0 to 1).</param>
+        /// <returns>The eased progress.</returns>
+		public static float OutCirc(float t) => 1 - InCirc(1 - t);
+		/// <summary>Ease-in and ease-out with circular acceleration and deceleration.</summary>
+        /// <param name="t">The normalized progress of the tween (0 to 1).</param>
+        /// <returns>The eased progress.</returns>
+		public static float InOutCirc(float t)
+		{
+			if (t < 0.5) return InCirc(t * 2) / 2;
+			return 1 - InCirc((1 - t) * 2) / 2;
+		}
+		/// <summary>Ease-in with an elastic, spring-like effect.</summary>
+        /// <param name="t">The normalized progress of the tween (0 to 1).</param>
+        /// <returns>The eased progress.</returns>
+		public static float InElastic(float t) => 1 - OutElastic(1 - t);
+		/// <summary>Ease-out with an elastic, spring-like effect.</summary>
+        /// <param name="t">The normalized progress of the tween (0 to 1).</param>
+        /// <returns>The eased progress.</returns>
+		public static float OutElastic(float t)
+		{
+			float p = 0.3f;
+			return (float)Math.Pow(2, -10 * t) * (float)Math.Sin((t - p / 4) * (2 * Math.PI) / p) + 1;
+		}
+		/// <summary>Ease-in and ease-out with an elastic, spring-like effect.</summary>
+        /// <param name="t">The normalized progress of the tween (0 to 1).</param>
+        /// <returns>The eased progress.</returns>
+		public static float InOutElastic(float t)
+		{
+			if (t < 0.5) return InElastic(t * 2) / 2;
+			return 1 - InElastic((1 - t) * 2) / 2;
+		}
+    }
+}

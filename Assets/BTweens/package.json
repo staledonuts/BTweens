@@ -1,0 +1,12 @@
+{
+    "name": "com.deaddonut.btweens",
+    "displayName": "BTweens",
+    "author": { "name": "DeadDonut", "url": "https://github.com/staledonuts/BTweens" },
+    "version": "0.1",
+    "unity": "2018.4",
+    "description": "A small Tweener for Unity using UniTask.",
+    "keywords": [ "async/await", "async", "UniTask", "Tween", "Animation"  ],
+    "license": "MIT",
+    "category": "Animation",
+    "dependencies": { com.cysharp.unitask }
+}
