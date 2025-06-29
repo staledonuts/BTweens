@@ -1,6 +1,7 @@
 ![alt text](https://github.com/staledonuts/Deaddonut-se/blob/main/DeadDonuts-Corp-banner.png "DeadDonuts Corp")
 
-# BTweens v0.1 - Initial release.
+# BTweens v0.2 - Initial release.
+## BugFix
 
 Note: This is a early version package, currently being used in a personal project. You are welcome to contribute and add to the package if you want. the only rule is to keep it slim and simple.
 
