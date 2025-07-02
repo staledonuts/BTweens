@@ -38,7 +38,7 @@ The easiest way to use BTween is through the provided extension methods on commo
 Basic Example: Fading and Scaling UI
 This example shows how to fade in a UI panel and apply an elastic scaling effect to a title element.
 
-```
+```C#
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 
@@ -65,11 +65,11 @@ public class SimpleUIAnimator : MonoBehaviour
 }
 ```
 ---
-### Chaining Animations with async/await
+## Chaining Animations with async/await
 Because BTween is built on UniTask, you can await any tween. This makes it trivial to create sequential animations.
 
 In this example, an AnimateOut() method fades out a panel and then, once the fade is complete, moves it off-screen.
-```
+```C#
 using UnityEngine;
 using UnityEngine.UI;
 using Cysharp.Threading.Tasks;
@@ -103,10 +103,10 @@ public class SequentialAnimator : MonoBehaviour
 }
 ```
 ---
-### Stopping a Tween
+## Stopping a Tween
 You can manually stop a running tween using BTween.StopTween(). The extension methods automatically assign a tweenIdentifierTag based on the property being animated (e.g., "Alpha", "LocalScale", "Position").
 
-```
+```C#
 public void StopPanelFade()
 {
     // Stops the alpha tween specifically on the panelCanvasGroup object.
@@ -120,9 +120,9 @@ public void StopAllTweens()
 }
 ```
 ---
-### Using the Static API (Advanced)
+## Using the Static API (Advanced)
 For custom tweens or when you don't have an extension method, you can use the core static API directly. You must provide an owner, a unique tweenIdentifierTag, and a setter action.
-```
+```C#
 using UnityEngine;
 using UnityEngine.UI;
 
