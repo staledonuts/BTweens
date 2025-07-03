@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Cysharp.Threading.Tasks.Triggers;
 using UnityEngine;
 
 /// <summary>
@@ -10,12 +11,13 @@ using UnityEngine;
 /// </summary>
 public static class BTween
 {
-    private static readonly Dictionary<Tuple<object, string>, Tuple<CancellationTokenSource, CancellationTokenSource>> _activeTweens = new Dictionary<Tuple<object, string>, Tuple<CancellationTokenSource, CancellationTokenSource>>();
+    private static readonly Dictionary<Tuple<object, string>, Tuple<CancellationTokenSource, IDisposable>> _activeTweens = new Dictionary<Tuple<object, string>, Tuple<CancellationTokenSource, IDisposable>>();
 
     private static Tuple<object, string> CreateKey(object owner, string tweenIdentifierTag)
     {
         return Tuple.Create(owner, tweenIdentifierTag ?? string.Empty);
     }
+
 
     /// <summary>
     /// Starts a tween for a float value.
@@ -123,28 +125,29 @@ public static class BTween
             return UniTask.CompletedTask;
         }
 
-        // Create a main token source for the object's lifetime.
-        var mainCts = new CancellationTokenSource();
-        
-        // Create a linked token source for this specific tween operation.
-        var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(mainCts.Token);
+        var cts = new CancellationTokenSource();
+        IDisposable registration = null;
 
+        // Get the destroy token from the owner object and register our callback.
+        CancellationToken ownerDestroyToken = default;
         if (owner is Component ownerAsComponent)
         {
-            // Register the MAIN token to be cancelled on destroy. This method is void.
-            mainCts.RegisterRaiseCancelOnDestroy(ownerAsComponent);
+            ownerDestroyToken = ownerAsComponent.GetAsyncDestroyTrigger().CancellationToken;
         }
         else if (owner is GameObject ownerAsGameObject)
         {
-            // Register the MAIN token to be cancelled on destroy. This method is void.
-            mainCts.RegisterRaiseCancelOnDestroy(ownerAsGameObject);
+            ownerDestroyToken = ownerAsGameObject.GetAsyncDestroyTrigger().CancellationToken;
         }
 
-        // Store both the linked and main CTS. This now matches the dictionary type.
-        _activeTweens[key] = Tuple.Create(linkedCts, mainCts);
+        if (ownerDestroyToken.CanBeCanceled)
+        {
+            // CancellationToken.Register returns an IDisposable handle to the registration.
+            registration = ownerDestroyToken.Register(() => cts.Cancel());
+        }
+
+        _activeTweens[key] = Tuple.Create(cts, registration);
         
-        // Pass the LINKED CTS to the async method.
-        return TweenValueAsync(key, startValue, endValue, duration, setter, interpolator, onComplete, easeFunction, onCompleteDelay, linkedCts, ignoreTimeScale);
+        return TweenValueAsync(key, startValue, endValue, duration, setter, interpolator, onComplete, easeFunction, onCompleteDelay, cts, ignoreTimeScale);
     }
     
     private static void StopTweenForKey(Tuple<object, string> key)
@@ -228,7 +231,7 @@ public static class BTween
     /// </summary>
     public static void StopAndClearAllManagedTweens()
     {
-        var tweensToStop = new List<Tuple<CancellationTokenSource, CancellationTokenSource>>(_activeTweens.Values);
+        var tweensToStop = new List<Tuple<CancellationTokenSource, IDisposable>>(_activeTweens.Values);
         
         foreach (var context in tweensToStop)
         {
