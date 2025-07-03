@@ -9,7 +9,7 @@ public static class TweenExtensions
     /// Common PropertyIDs Pre-hashed.
     /// </summary>
     
-    private static class TweenPropertyIDs
+    public static class TweenPropertyIDs
     {
         /// <summary>
         /// Pre-hashed "Volume" string.
