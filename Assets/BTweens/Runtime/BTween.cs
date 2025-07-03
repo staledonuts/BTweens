@@ -11,16 +11,75 @@ using UnityEngine;
 /// </summary>
 public static class BTween
 {
-    private static readonly Dictionary<Tuple<object, string>, Tuple<CancellationTokenSource, IDisposable>> _activeTweens = new Dictionary<Tuple<object, string>, Tuple<CancellationTokenSource, IDisposable>>();
+    // The dictionary now uses a uint hash for the tween identifier.
+    private static readonly Dictionary<Tuple<object, uint>, Tuple<CancellationTokenSource, IDisposable>> _activeTweens = new Dictionary<Tuple<object, uint>, Tuple<CancellationTokenSource, IDisposable>>();
 
-    private static Tuple<object, string> CreateKey(object owner, string tweenIdentifierTag)
+    // CreateKey now returns a key with a uint hash.
+    private static Tuple<object, uint> CreateKey(object owner, uint tweenIdentifierHash)
     {
-        return Tuple.Create(owner, tweenIdentifierTag ?? string.Empty);
+        return Tuple.Create(owner, tweenIdentifierHash);
     }
 
+    #region Public API Overloads (uint hash)
+    /// <summary>
+    /// Starts a tween for a float value using a uint hash identifier.
+    /// </summary>
+    /// <param name="owner">The object that owns this tween. Used for identification and automatic cancellation on destruction.</param>
+    /// <param name="tweenIdentifierHash">A uint hash to uniquely identify this tween on the owner object.</param>
+    /// <param name="setter">The action that applies the tweened value each frame.</param>
+    /// <param name="startValue">The starting value of the tween.</param>
+    /// <param name="endValue">The target value of the tween.</param>
+    /// <param name="duration">The duration of the tween in seconds.</param>
+    /// <param name="onComplete">An optional action to invoke when the tween completes.</param>
+    /// <param name="easeFunction">The easing function to use for the tween's progression.</param>
+    /// <param name="onCompleteDelay">An optional delay in seconds before invoking the onComplete action.</param>
+    /// <param name="ignoreTimeScale">If true, the tween will ignore Time.timeScale and use unscaled time.</param>
+    /// <returns>A UniTask that completes when the tween is finished or cancelled.</returns>
+    public static UniTask Float(object owner, uint tweenIdentifierHash, Action<float> setter, float startValue, float endValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
+    {
+        return StartTween(owner, tweenIdentifierHash, startValue, endValue, duration, setter, Mathf.LerpUnclamped, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
+    }
 
     /// <summary>
-    /// Starts a tween for a float value.
+    /// Starts a tween for a Vector2 value using a uint hash identifier.
+    /// </summary>
+    /// <inheritdoc cref="Float(object, uint, Action{float}, float, float, float, Action, Func{float, float}, float, bool)"/>
+    public static UniTask Vector2(object owner, uint tweenIdentifierHash, Action<Vector2> setter, Vector2 startValue, Vector2 endValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
+    {
+        return StartTween(owner, tweenIdentifierHash, startValue, endValue, duration, setter, UnityEngine.Vector2.LerpUnclamped, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
+    }
+
+    /// <summary>
+    /// Starts a tween for a Vector3 value using a uint hash identifier.
+    /// </summary>
+    /// <inheritdoc cref="Float(object, uint, Action{float}, float, float, float, Action, Func{float, float}, float, bool)"/>
+    public static UniTask Vector3(object owner, uint tweenIdentifierHash, Action<Vector3> setter, Vector3 startValue, Vector3 endValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
+    {
+        return StartTween(owner, tweenIdentifierHash, startValue, endValue, duration, setter, UnityEngine.Vector3.LerpUnclamped, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
+    }
+
+    /// <summary>
+    /// Starts a tween for a Quaternion value using a uint hash identifier. Uses Slerp for correct rotational interpolation.
+    /// </summary>
+    /// <inheritdoc cref="Float(object, uint, Action{float}, float, float, float, Action, Func{float, float}, float, bool)"/>
+    public static UniTask Quaternion(object owner, uint tweenIdentifierHash, Action<Quaternion> setter, Quaternion startValue, Quaternion endValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
+    {
+        return StartTween(owner, tweenIdentifierHash, startValue, endValue, duration, setter, UnityEngine.Quaternion.SlerpUnclamped, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
+    }
+
+    /// <summary>
+    /// Starts a tween for a Color value using a uint hash identifier.
+    /// </summary>
+    /// <inheritdoc cref="Float(object, uint, Action{float}, float, float, float, Action, Func{float, float}, float, bool)"/>
+    public static UniTask Color(object owner, uint tweenIdentifierHash, Action<Color> setter, Color startValue, Color endValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
+    {
+        return StartTween(owner, tweenIdentifierHash, startValue, endValue, duration, setter, UnityEngine.Color.LerpUnclamped, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
+    }
+    #endregion
+
+    #region Public API Overloads (string tag - for convenience)
+    /// <summary>
+    /// Starts a tween for a float value. Hashes the string tag to a uint for internal use.
     /// </summary>
     /// <param name="owner">The object that owns this tween. Used for identification and automatic cancellation on destruction.</param>
     /// <param name="tweenIdentifierTag">A string tag to uniquely identify this tween on the owner object.</param>
@@ -31,91 +90,46 @@ public static class BTween
     /// <param name="onComplete">An optional action to invoke when the tween completes.</param>
     /// <param name="easeFunction">The easing function to use for the tween's progression.</param>
     /// <param name="onCompleteDelay">An optional delay in seconds before invoking the onComplete action.</param>
+    /// <param name="ignoreTimeScale">If true, the tween will ignore Time.timeScale and use unscaled time.</param>
     /// <returns>A UniTask that completes when the tween is finished or cancelled.</returns>
     public static UniTask Float(object owner, string tweenIdentifierTag, Action<float> setter, float startValue, float endValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
-    {
-        return StartTween(owner, tweenIdentifierTag, startValue, endValue, duration, setter, Mathf.LerpUnclamped, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
-    }
-
+        => Float(owner, StringHash(tweenIdentifierTag), setter, startValue, endValue, duration, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
+    
     /// <summary>
-    /// Starts a tween for a Vector2 value.
+    /// Starts a tween for a Vector2 value. Hashes the string tag to a uint for internal use.
     /// </summary>
-    /// <param name="owner">The object that owns this tween. Used for identification and automatic cancellation on destruction.</param>
-    /// <param name="tweenIdentifierTag">A string tag to uniquely identify this tween on the owner object.</param>
-    /// <param name="setter">The action that applies the tweened value each frame.</param>
-    /// <param name="startValue">The starting value of the tween.</param>
-    /// <param name="endValue">The target value of the tween.</param>
-    /// <param name="duration">The duration of the tween in seconds.</param>
-    /// <param name="onComplete">An optional action to invoke when the tween completes.</param>
-    /// <param name="easeFunction">The easing function to use for the tween's progression.</param>
-    /// <param name="onCompleteDelay">An optional delay in seconds before invoking the onComplete action.</param>
-    /// <returns>A UniTask that completes when the tween is finished or cancelled.</returns>
+    /// <inheritdoc cref="Float(object, string, Action{float}, float, float, float, Action, Func{float, float}, float, bool)"/>
     public static UniTask Vector2(object owner, string tweenIdentifierTag, Action<Vector2> setter, Vector2 startValue, Vector2 endValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
-    {
-        return StartTween(owner, tweenIdentifierTag, startValue, endValue, duration, setter, UnityEngine.Vector2.LerpUnclamped, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
-    }
-
+        => Vector2(owner, StringHash(tweenIdentifierTag), setter, startValue, endValue, duration, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
 
     /// <summary>
-    /// Starts a tween for a Vector3 value.
+    /// Starts a tween for a Vector3 value. Hashes the string tag to a uint for internal use.
     /// </summary>
-    /// <param name="owner">The object that owns this tween. Used for identification and automatic cancellation on destruction.</param>
-    /// <param name="tweenIdentifierTag">A string tag to uniquely identify this tween on the owner object.</param>
-    /// <param name="setter">The action that applies the tweened value each frame.</param>
-    /// <param name="startValue">The starting value of the tween.</param>
-    /// <param name="endValue">The target value of the tween.</param>
-    /// <param name="duration">The duration of the tween in seconds.</param>
-    /// <param name="onComplete">An optional action to invoke when the tween completes.</param>
-    /// <param name="easeFunction">The easing function to use for the tween's progression.</param>
-    /// <param name="onCompleteDelay">An optional delay in seconds before invoking the onComplete action.</param>
-    /// <returns>A UniTask that completes when the tween is finished or cancelled.</returns>
+    /// <inheritdoc cref="Float(object, string, Action{float}, float, float, float, Action, Func{float, float}, float, bool)"/>
     public static UniTask Vector3(object owner, string tweenIdentifierTag, Action<Vector3> setter, Vector3 startValue, Vector3 endValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
-    {
-        return StartTween(owner, tweenIdentifierTag, startValue, endValue, duration, setter, UnityEngine.Vector3.LerpUnclamped, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
-    }
+        => Vector3(owner, StringHash(tweenIdentifierTag), setter, startValue, endValue, duration, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
 
     /// <summary>
-    /// Starts a tween for a Quaternion value. Uses Slerp for correct rotational interpolation.
+    /// Starts a tween for a Quaternion value. Hashes the string tag to a uint for internal use. Uses Slerp for correct rotational interpolation.
     /// </summary>
-    /// <param name="owner">The object that owns this tween. Used for identification and automatic cancellation on destruction.</param>
-    /// <param name="tweenIdentifierTag">A string tag to uniquely identify this tween on the owner object.</param>
-    /// <param name="setter">The action that applies the tweened value each frame.</param>
-    /// <param name="startValue">The starting value of the tween.</param>
-    /// <param name="endValue">The target value of the tween.</param>
-    /// <param name="duration">The duration of the tween in seconds.</param>
-    /// <param name="onComplete">An optional action to invoke when the tween completes.</param>
-    /// <param name="easeFunction">The easing function to use for the tween's progression.</param>
-    /// <param name="onCompleteDelay">An optional delay in seconds before invoking the onComplete action.</param>
-    /// <returns>A UniTask that completes when the tween is finished or cancelled.</returns>
+    /// <inheritdoc cref="Float(object, string, Action{float}, float, float, float, Action, Func{float, float}, float, bool)"/>
     public static UniTask Quaternion(object owner, string tweenIdentifierTag, Action<Quaternion> setter, Quaternion startValue, Quaternion endValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
-    {
-        return StartTween(owner, tweenIdentifierTag, startValue, endValue, duration, setter, UnityEngine.Quaternion.SlerpUnclamped, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
-    }
+        => Quaternion(owner, StringHash(tweenIdentifierTag), setter, startValue, endValue, duration, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
 
     /// <summary>
-    /// Starts a tween for a Color value.
+    /// Starts a tween for a Color value. Hashes the string tag to a uint for internal use.
     /// </summary>
-    /// <param name="owner">The object that owns this tween. Used for identification and automatic cancellation on destruction.</param>
-    /// <param name="tweenIdentifierTag">A string tag to uniquely identify this tween on the owner object.</param>
-    /// <param name="setter">The action that applies the tweened value each frame.</param>
-    /// <param name="startValue">The starting value of the tween.</param>
-    /// <param name="endValue">The target value of the tween.</param>
-    /// <param name="duration">The duration of the tween in seconds.</param>
-    /// <param name="onComplete">An optional action to invoke when the tween completes.</param>
-    /// <param name="easeFunction">The easing function to use for the tween's progression.</param>
-    /// <param name="onCompleteDelay">An optional delay in seconds before invoking the onComplete action.</param>
-    /// <returns>A UniTask that completes when the tween is finished or cancelled.</returns>
+    /// <inheritdoc cref="Float(object, string, Action{float}, float, float, float, Action, Func{float, float}, float, bool)"/>
     public static UniTask Color(object owner, string tweenIdentifierTag, Action<Color> setter, Color startValue, Color endValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
-    {
-        return StartTween(owner, tweenIdentifierTag, startValue, endValue, duration, setter, UnityEngine.Color.LerpUnclamped, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
-    }
+        => Color(owner, StringHash(tweenIdentifierTag), setter, startValue, endValue, duration, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
+    #endregion
 
     /// <summary>
     /// The internal generic method that sets up and starts any tween. It handles tween cancellation, lifecycle management, and invokes the async tweening logic.
     /// </summary>
-    private static UniTask StartTween<T>(object owner, string tweenIdentifierTag, T startValue, T endValue, float duration, Action<T> setter, Func<T, T, float, T> interpolator, Action onComplete, Func<float, float> easeFunction, float onCompleteDelay, bool ignoreTimeScale)
+    private static UniTask StartTween<T>(object owner, uint tweenIdentifierHash, T startValue, T endValue, float duration, Action<T> setter, Func<T, T, float, T> interpolator, Action onComplete, Func<float, float> easeFunction, float onCompleteDelay, bool ignoreTimeScale)
     {
-        var key = CreateKey(owner, tweenIdentifierTag);
+        var key = CreateKey(owner, tweenIdentifierHash);
         StopTweenForKey(key);
 
         if (duration <= 0)
@@ -128,7 +142,6 @@ public static class BTween
         var cts = new CancellationTokenSource();
         IDisposable registration = null;
 
-        // Get the destroy token from the owner object and register our callback.
         CancellationToken ownerDestroyToken = default;
         if (owner is Component ownerAsComponent)
         {
@@ -141,7 +154,6 @@ public static class BTween
 
         if (ownerDestroyToken.CanBeCanceled)
         {
-            // CancellationToken.Register returns an IDisposable handle to the registration.
             registration = ownerDestroyToken.Register(() => cts.Cancel());
         }
 
@@ -150,7 +162,7 @@ public static class BTween
         return TweenValueAsync(key, startValue, endValue, duration, setter, interpolator, onComplete, easeFunction, onCompleteDelay, cts, ignoreTimeScale);
     }
     
-    private static void StopTweenForKey(Tuple<object, string> key)
+    private static void StopTweenForKey(Tuple<object, uint> key)
     {
         if (_activeTweens.TryGetValue(key, out var context))
         {
@@ -159,24 +171,34 @@ public static class BTween
     }
 
     /// <summary>
+    /// Manually stops a specific tween on a given object, identified by its hash.
+    /// </summary>
+    /// <param name="owner">The owner object of the tween to stop.</param>
+    /// <param name="tweenIdentifierHash">The identifier hash of the tween to stop.</param>
+    public static void StopTween(object owner, uint tweenIdentifierHash)
+    {
+        var key = CreateKey(owner, tweenIdentifierHash);
+        StopTweenForKey(key);
+    }
+    
+    /// <summary>
     /// Manually stops a specific tween on a given object, identified by its tag.
     /// </summary>
     /// <param name="owner">The owner object of the tween to stop.</param>
     /// <param name="tweenIdentifierTag">The identifier tag of the tween to stop.</param>
     public static void StopTween(object owner, string tweenIdentifierTag)
     {
-        var key = CreateKey(owner, tweenIdentifierTag);
-        StopTweenForKey(key);
+        StopTween(owner, StringHash(tweenIdentifierTag));
     }
 
     /// <summary>
     /// The core asynchronous loop that runs a tween every frame until it completes or is cancelled.
     /// </summary>
     private static async UniTask TweenValueAsync<T>(
-    Tuple<object, string> key, T from, T to, float duration,
-    Action<T> setter, Func<T, T, float, T> interpolator,
-    Action onComplete, Func<float, float> easeFunction,
-    float onCompleteDelay, CancellationTokenSource cts, bool ignoreTimeScale)
+        Tuple<object, uint> key, T from, T to, float duration,
+        Action<T> setter, Func<T, T, float, T> interpolator,
+        Action onComplete, Func<float, float> easeFunction,
+        float onCompleteDelay, CancellationTokenSource cts, bool ignoreTimeScale)
     {
         float elapsedTime = 0f;
         easeFunction ??= Ease.Linear;
@@ -187,15 +209,9 @@ public static class BTween
             while (elapsedTime < duration)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-
-                // Use unscaledDeltaTime if ignoreTimeScale is true
                 elapsedTime += ignoreTimeScale ? Time.unscaledDeltaTime : Time.deltaTime;
-                
                 float progress = Mathf.Clamp01(elapsedTime / duration);
-                float easedProgress = easeFunction(progress);
-                
-                setter(interpolator(from, to, easedProgress));
-                
+                setter(interpolator(from, to, easeFunction(progress)));
                 await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
             }
 
@@ -205,15 +221,15 @@ public static class BTween
             {
                 if (onCompleteDelay > 0f)
                 {
-                    // Pass ignoreTimeScale to the delay
                     await UniTask.Delay(TimeSpan.FromSeconds(onCompleteDelay), ignoreTimeScale: ignoreTimeScale, delayTiming: PlayerLoopTiming.Update, cancellationToken: cancellationToken);
                 }
                 onComplete.Invoke();
             }
+
         }
         catch (OperationCanceledException)
         {
-            // Expected when a tween is stopped or the owner is destroyed.
+            // Expected
         }
         finally
         {
@@ -239,6 +255,24 @@ public static class BTween
         }
     }
 
+    /// <summary>
+    /// Hashes a string using the FNV-1a algorithm.
+    /// </summary>
+    public static uint StringHash(string input)
+    {
+        if (input == null) return 0;
+        
+        const uint fnvOffset = 2166136261;
+        const uint fnvPrime = 16777619;
+
+        uint hash = fnvOffset;
+        foreach (char c in input)
+        {
+            hash ^= c;
+            hash *= fnvPrime;
+        }
+        return hash;
+    }
 
     /// <summary>
     /// A static class containing a collection of common easing functions to control the rate of change of a tween.

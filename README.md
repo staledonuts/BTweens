@@ -1,10 +1,11 @@
 ![alt text](https://github.com/staledonuts/Deaddonut-se/blob/main/DeadDonuts-Corp-banner.png "DeadDonuts Corp")
 
-# BTweens v0.3 - Ignore Timescale Edition.
+# BTweens v0.31 - Ignore Timescale Edition.
 
 ```
 Latest feature:
 - Added the possibility to ignore delta time.
+- Re-worked to use string hashes for keys as part of a optimization pass.
 ```
 
 Note: This is a early version package, currently being used in a personal project. You are welcome to contribute and add to the package if you want. the only rule is to keep it slim and simple if you want to add tons of extensions and features that are specific to other packages and or tools, we can add a Link to your repository as a recommendation.
