@@ -1,8 +1,13 @@
 ![alt text](https://github.com/staledonuts/Deaddonut-se/blob/main/DeadDonuts-Corp-banner.png "DeadDonuts Corp")
 
-# BTweens v0.2 - Initial release.
+# BTweens v0.3 - Ignore Timescale Edition.
 
-Note: This is a early version package, currently being used in a personal project. You are welcome to contribute and add to the package if you want. the only rule is to keep it slim and simple.
+```
+Latest feature:
+- Added the possibility to ignore delta time.
+```
+
+Note: This is a early version package, currently being used in a personal project. You are welcome to contribute and add to the package if you want. the only rule is to keep it slim and simple if you want to add tons of extensions and features that are specific to other packages and or tools, we can add a Link to your repository as a recommendation.
 
 Async Tween Engine for Unity
 A lightweight, and easy-to-use asynchronous tweening engine for Unity, built on top of [UniTask](https://github.com/Cysharp/UniTask). This package provides a extension-method-based API to animate properties of GameObjects and UI elements with minimal setup.

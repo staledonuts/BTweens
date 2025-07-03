@@ -14,27 +14,11 @@ public static class TweenExtensions
     /// <param name="onComplete">An action to invoke when the tween completes.</param>
     /// <param name="easeFunction">The easing function to use for the tween.</param>
     /// <param name="onCompleteDelay">A delay in seconds before the onComplete action is invoked.</param>
-    public static UniTask TweenVolume(this AudioSource audioSource, float targetVolume, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    public static UniTask TweenVolume(this AudioSource audioSource, float targetVolume, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
     {
         if (audioSource == null) return UniTask.CompletedTask;
-        return BTween.Float(audioSource, "Volume", vol => audioSource.volume = vol, audioSource.volume, targetVolume, duration, onComplete, easeFunction, onCompleteDelay);
+        return BTween.Float(audioSource, "Volume", vol => audioSource.volume = vol, audioSource.volume, targetVolume, duration, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
     }
-#if BroAudio
-    /// <summary>
-    /// Tweens the volume of an IAudioPlayer (BroAudio) to a target value over a specified duration.
-    /// </summary>
-    /// <param name="audioPlayer">The IAudioPlayer instance to modify.</param>
-    /// <param name="targetVolume">The target volume to tween to.</param>
-    /// <param name="duration">The duration of the tween in seconds.</param>
-    /// <param name="onComplete">An action to invoke when the tween completes.</param>
-    /// <param name="easeFunction">The easing function to use for the tween.</param>
-    /// <param name="onCompleteDelay">A delay in seconds before the onComplete action is invoked.</param>
-    public static UniTask TweenVolume(this IAudioPlayer audioPlayer, float targetVolume, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
-    {
-        if (audioPlayer == null) return UniTask.CompletedTask;
-        return Tween.Float(audioPlayer, "Volume", vol => audioPlayer.SetVolume(vol), audioPlayer.CurrentPlayingClip.Volume, targetVolume, duration, onComplete, easeFunction, onCompleteDelay);
-    }
-#endif
 
     /// <summary>
     /// Tweens the alpha of a CanvasGroup to a target value over a specified duration.
@@ -45,10 +29,10 @@ public static class TweenExtensions
     /// <param name="onComplete">An action to invoke when the tween completes.</param>
     /// <param name="easeFunction">The easing function to use for the tween.</param>
     /// <param name="onCompleteDelay">A delay in seconds before the onComplete action is invoked.</param>
-    public static UniTask TweenAlpha(this CanvasGroup canvasGroup, float targetAlpha, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    public static UniTask TweenAlpha(this CanvasGroup canvasGroup, float targetAlpha, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
     {
         if (canvasGroup == null) return UniTask.CompletedTask;
-        return BTween.Float(canvasGroup, "Alpha", alpha => canvasGroup.alpha = alpha, canvasGroup.alpha, targetAlpha, duration, onComplete, easeFunction, onCompleteDelay);
+        return BTween.Float(canvasGroup, "Alpha", alpha => canvasGroup.alpha = alpha, canvasGroup.alpha, targetAlpha, duration, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
     }
 
     /// <summary>
@@ -60,10 +44,10 @@ public static class TweenExtensions
     /// <param name="onComplete">An action to invoke when the tween completes.</param>
     /// <param name="easeFunction">The easing function to use for the tween.</param>
     /// <param name="onCompleteDelay">A delay in seconds before the onComplete action is invoked.</param>
-    public static UniTask TweenLocalPosition(this Transform transform, Vector3 targetPosition, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    public static UniTask TweenLocalPosition(this Transform transform, Vector3 targetPosition, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
     {
         if (transform == null) return UniTask.CompletedTask;
-        return BTween.Vector3(transform, "LocalPosition", pos => transform.localPosition = pos, transform.localPosition, targetPosition, duration, onComplete, easeFunction, onCompleteDelay);
+        return BTween.Vector3(transform, "LocalPosition", pos => transform.localPosition = pos, transform.localPosition, targetPosition, duration, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
     }
 
     /// <summary>
@@ -75,10 +59,10 @@ public static class TweenExtensions
     /// <param name="onComplete">An action to invoke when the tween completes.</param>
     /// <param name="easeFunction">The easing function to use for the tween.</param>
     /// <param name="onCompleteDelay">A delay in seconds before the onComplete action is invoked.</param>
-    public static UniTask TweenPosition(this Transform transform, Vector3 targetPosition, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    public static UniTask TweenPosition(this Transform transform, Vector3 targetPosition, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
     {
         if (transform == null) return UniTask.CompletedTask;
-        return BTween.Vector3(transform, "Position", pos => transform.position = pos, transform.position, targetPosition, duration, onComplete, easeFunction, onCompleteDelay);
+        return BTween.Vector3(transform, "Position", pos => transform.position = pos, transform.position, targetPosition, duration, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
     }
 
     /// <summary>
@@ -90,10 +74,10 @@ public static class TweenExtensions
     /// <param name="onComplete">An action to invoke when the tween completes.</param>
     /// <param name="easeFunction">The easing function to use for the tween.</param>
     /// <param name="onCompleteDelay">A delay in seconds before the onComplete action is invoked.</param>
-    public static UniTask TweenLocalScale(this Transform transform, Vector3 targetScale, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    public static UniTask TweenLocalScale(this Transform transform, Vector3 targetScale, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
     {
         if (transform == null) return UniTask.CompletedTask;
-        return BTween.Vector3(transform, "LocalScale", scale => transform.localScale = scale, transform.localScale, targetScale, duration, onComplete, easeFunction, onCompleteDelay);
+        return BTween.Vector3(transform, "LocalScale", scale => transform.localScale = scale, transform.localScale, targetScale, duration, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
     }
 
     /// <summary>
@@ -105,10 +89,10 @@ public static class TweenExtensions
     /// <param name="onComplete">An action to invoke when the tween completes.</param>
     /// <param name="easeFunction">The easing function to use for the tween.</param>
     /// <param name="onCompleteDelay">A delay in seconds before the onComplete action is invoked.</param>
-    public static UniTask TweenLocalRotation(this Transform transform, Quaternion targetRotation, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    public static UniTask TweenLocalRotation(this Transform transform, Quaternion targetRotation, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
     {
         if (transform == null) return UniTask.CompletedTask;
-        return BTween.Quaternion(transform, "LocalRotation", rot => transform.localRotation = rot, transform.localRotation, targetRotation, duration, onComplete, easeFunction, onCompleteDelay);
+        return BTween.Quaternion(transform, "LocalRotation", rot => transform.localRotation = rot, transform.localRotation, targetRotation, duration, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
     }
 
     /// <summary>
@@ -120,10 +104,10 @@ public static class TweenExtensions
     /// <param name="onComplete">An action to invoke when the tween completes.</param>
     /// <param name="easeFunction">The easing function to use for the tween.</param>
     /// <param name="onCompleteDelay">A delay in seconds before the onComplete action is invoked.</param>
-    public static UniTask TweenLocalEulerAngles(this Transform transform, Vector3 targetEulerAngles, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    public static UniTask TweenLocalEulerAngles(this Transform transform, Vector3 targetEulerAngles, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
     {
         if (transform == null) return UniTask.CompletedTask;
-        return BTween.Vector3(transform, "LocalEulerAngles", euler => transform.localEulerAngles = euler, transform.localEulerAngles, targetEulerAngles, duration, onComplete, easeFunction, onCompleteDelay);
+        return BTween.Vector3(transform, "LocalEulerAngles", euler => transform.localEulerAngles = euler, transform.localEulerAngles, targetEulerAngles, duration, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
     }
 
     /// <summary>
@@ -135,10 +119,10 @@ public static class TweenExtensions
     /// <param name="onComplete">An action to invoke when the tween completes.</param>
     /// <param name="easeFunction">The easing function to use for the tween.</param>
     /// <param name="onCompleteDelay">A delay in seconds before the onComplete action is invoked.</param>
-    public static UniTask TweenAnchoredPosition(this RectTransform rectTransform, Vector2 targetPosition, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    public static UniTask TweenAnchoredPosition(this RectTransform rectTransform, Vector2 targetPosition, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
     {
         if (rectTransform == null) return UniTask.CompletedTask;
-        return BTween.Vector2(rectTransform, "AnchoredPosition", pos => rectTransform.anchoredPosition = pos, rectTransform.anchoredPosition, targetPosition, duration, onComplete, easeFunction, onCompleteDelay);
+        return BTween.Vector2(rectTransform, "AnchoredPosition", pos => rectTransform.anchoredPosition = pos, rectTransform.anchoredPosition, targetPosition, duration, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
     }
 
     /// <summary>
@@ -150,27 +134,19 @@ public static class TweenExtensions
     /// <param name="onComplete">An action to invoke when the tween completes.</param>
     /// <param name="easeFunction">The easing function to use for the tween.</param>
     /// <param name="onCompleteDelay">A delay in seconds before the onComplete action is invoked.</param>
-    public static UniTask TweenToOffScreen(this RectTransform rectTransform, OffScreenDirection direction, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    public static UniTask TweenToOffScreen(this RectTransform rectTransform, OffScreenDirection direction, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
     {
-        if (rectTransform == null)
+        if (rectTransform == null) 
         {
-            Debug.LogWarning("Cannot tween a null RectTransform.");
             return UniTask.CompletedTask;
         }
-        
-        // Find the root Canvas that this RectTransform belongs to.
         Canvas canvas = rectTransform.GetComponentInParent<Canvas>();
-        if (canvas == null)
+        if (canvas == null) 
         {
-            Debug.LogError("TweenToOffScreen requires the RectTransform to be within a Canvas.", rectTransform);
             return UniTask.CompletedTask;
         }
-
-        // Calculate the target position based on the canvas and element's properties.
         Vector2 targetPosition = GetOffScreenPosition(rectTransform, canvas, direction);
-
-        // Use the existing tweening method to perform the move.
-        return rectTransform.TweenAnchoredPosition(targetPosition, duration, onComplete, easeFunction, onCompleteDelay);
+        return rectTransform.TweenAnchoredPosition(targetPosition, duration, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
     }
 
     /// <summary>
@@ -182,10 +158,10 @@ public static class TweenExtensions
     /// <param name="onComplete">An action to invoke when the tween completes.</param>
     /// <param name="easeFunction">The easing function to use for the tween.</param>
     /// <param name="onCompleteDelay">A delay in seconds before the onComplete action is invoked.</param>
-    public static UniTask TweenSizeDelta(this RectTransform rectTransform, Vector2 targetSize, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    public static UniTask TweenSizeDelta(this RectTransform rectTransform, Vector2 targetSize, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
     {
         if (rectTransform == null) return UniTask.CompletedTask;
-        return BTween.Vector2(rectTransform, "SizeDelta", size => rectTransform.sizeDelta = size, rectTransform.sizeDelta, targetSize, duration, onComplete, easeFunction, onCompleteDelay);
+        return BTween.Vector2(rectTransform, "SizeDelta", size => rectTransform.sizeDelta = size, rectTransform.sizeDelta, targetSize, duration, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
     }
 
     /// <summary>
@@ -198,10 +174,10 @@ public static class TweenExtensions
     /// <param name="onComplete">An action to invoke when the tween completes.</param>
     /// <param name="easeFunction">The easing function to use for the tween.</param>
     /// <param name="onCompleteDelay">A delay in seconds before the onComplete action is invoked.</param>
-    public static UniTask TweenMaterialFloat(this Material material, string propertyName, float targetValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    public static UniTask TweenMaterialFloat(this Material material, string propertyName, float targetValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
     {
-        if (material == null || string.IsNullOrEmpty(propertyName) || !material.HasProperty(propertyName)) return UniTask.CompletedTask;
-        return BTween.Float(material, $"MaterialFloat_{propertyName}", value => material.SetFloat(propertyName, value), material.GetFloat(propertyName), targetValue, duration, onComplete, easeFunction, onCompleteDelay);
+        if (material == null) return UniTask.CompletedTask;
+        return BTween.Float(material, $"MaterialFloat_{propertyName}", value => material.SetFloat(propertyName, value), material.GetFloat(propertyName), targetValue, duration, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
     }
 
     /// <summary>
@@ -214,10 +190,10 @@ public static class TweenExtensions
     /// <param name="onComplete">An action to invoke when the tween completes.</param>
     /// <param name="easeFunction">The easing function to use for the tween.</param>
     /// <param name="onCompleteDelay">A delay in seconds before the onComplete action is invoked.</param>
-    public static UniTask TweenMaterialFloat(this Material material, int propertyHash, float targetValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    public static UniTask TweenMaterialFloat(this Material material, int propertyHash, float targetValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
     {
-        if (material == null || !material.HasProperty(propertyHash)) return UniTask.CompletedTask;
-        return BTween.Float(material, $"MaterialFloat_{propertyHash}", value => material.SetFloat(propertyHash, value), material.GetFloat(propertyHash), targetValue, duration, onComplete, easeFunction, onCompleteDelay);
+        if (material == null) return UniTask.CompletedTask;
+        return BTween.Float(material, $"MaterialFloat_{propertyHash}", value => material.SetFloat(propertyHash, value), material.GetFloat(propertyHash), targetValue, duration, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
     }
 
     /// <summary>
@@ -229,10 +205,10 @@ public static class TweenExtensions
     /// <param name="onComplete">An action to invoke when the tween completes.</param>
     /// <param name="easeFunction">The easing function to use for the tween.</param>
     /// <param name="onCompleteDelay">A delay in seconds before the onComplete action is invoked.</param>
-    public static UniTask TweenSliderValue(this Slider slider, float targetValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    public static UniTask TweenSliderValue(this Slider slider, float targetValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
     {
         if (slider == null) return UniTask.CompletedTask;
-        return BTween.Float(slider, slider.name, value => slider.value = value, slider.value, targetValue, duration, onComplete, easeFunction, onCompleteDelay);
+        return BTween.Float(slider, slider.name, value => slider.value = value, slider.value, targetValue, duration, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
     }
 
     /// <summary>
@@ -244,10 +220,10 @@ public static class TweenExtensions
     /// <param name="onComplete">An action to invoke when the tween completes.</param>
     /// <param name="easeFunction">The easing function to use for the tween.</param>
     /// <param name="onCompleteDelay">A delay in seconds before the onComplete action is invoked.</param>
-    public static UniTask TweenImageColor(this Image image, Color targetColor, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    public static UniTask TweenImageColor(this Image image, Color targetColor, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
     {
         if (image == null) return UniTask.CompletedTask;
-        return BTween.Color(image, "Color", color => image.color = color, image.color, targetColor, duration, onComplete, easeFunction, onCompleteDelay);
+        return BTween.Color(image, "Color", color => image.color = color, image.color, targetColor, duration, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
     }
 
     /// <summary>
@@ -260,7 +236,7 @@ public static class TweenExtensions
     /// <param name="onComplete">An action to invoke when the tween completes.</param>
     /// <param name="easeFunction">The easing function to use for the tween.</param>
     /// <param name="onCompleteDelay">A delay before the onComplete action is invoked.</param>
-    public static UniTask TweenMeshColor(this Mesh mesh, Color targetColor, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    public static UniTask TweenMeshColor(this Mesh mesh, Color targetColor, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
     {
         if (mesh == null) return UniTask.CompletedTask;
 
@@ -279,7 +255,7 @@ public static class TweenExtensions
             mesh.colors = colors;
         };
 
-        return BTween.Color(mesh, "MeshColor", setter, startColor, targetColor, duration, onComplete, easeFunction, onCompleteDelay);
+        return BTween.Color(mesh, "MeshColor", setter, startColor, targetColor, duration, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
     }
 
     /// <summary>
@@ -292,7 +268,7 @@ public static class TweenExtensions
     /// <param name="onComplete">An action to invoke when the tween completes.</param>
     /// <param name="easeFunction">The easing function to use for the tween.</param>
     /// <param name="onCompleteDelay">A delay before the onComplete action is invoked.</param>
-    public static UniTask TweenMeshColorAlpha(this Mesh mesh, float targetAlpha, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    public static UniTask TweenMeshColorAlpha(this Mesh mesh, float targetAlpha, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
     {
         if (mesh == null) return UniTask.CompletedTask;
 
@@ -321,7 +297,7 @@ public static class TweenExtensions
             mesh.colors = newColors;
         };
 
-        return BTween.Float(mesh, "MeshColorAlpha", setter, startAlpha, targetAlpha, duration, onComplete, easeFunction, onCompleteDelay);
+        return BTween.Float(mesh, "MeshColorAlpha", setter, startAlpha, targetAlpha, duration, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
     }
 
     #region Helpers

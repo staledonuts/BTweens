@@ -30,9 +30,9 @@ public static class BTween
     /// <param name="easeFunction">The easing function to use for the tween's progression.</param>
     /// <param name="onCompleteDelay">An optional delay in seconds before invoking the onComplete action.</param>
     /// <returns>A UniTask that completes when the tween is finished or cancelled.</returns>
-    public static UniTask Float(object owner, string tweenIdentifierTag, Action<float> setter, float startValue, float endValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    public static UniTask Float(object owner, string tweenIdentifierTag, Action<float> setter, float startValue, float endValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
     {
-        return StartTween(owner, tweenIdentifierTag, startValue, endValue, duration, setter, Mathf.LerpUnclamped, onComplete, easeFunction, onCompleteDelay);
+        return StartTween(owner, tweenIdentifierTag, startValue, endValue, duration, setter, Mathf.LerpUnclamped, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
     }
 
     /// <summary>
@@ -48,10 +48,11 @@ public static class BTween
     /// <param name="easeFunction">The easing function to use for the tween's progression.</param>
     /// <param name="onCompleteDelay">An optional delay in seconds before invoking the onComplete action.</param>
     /// <returns>A UniTask that completes when the tween is finished or cancelled.</returns>
-    public static UniTask Vector2(object owner, string tweenIdentifierTag, Action<Vector2> setter, Vector2 startValue, Vector2 endValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    public static UniTask Vector2(object owner, string tweenIdentifierTag, Action<Vector2> setter, Vector2 startValue, Vector2 endValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
     {
-        return StartTween(owner, tweenIdentifierTag, startValue, endValue, duration, setter, UnityEngine.Vector2.LerpUnclamped, onComplete, easeFunction, onCompleteDelay);
+        return StartTween(owner, tweenIdentifierTag, startValue, endValue, duration, setter, UnityEngine.Vector2.LerpUnclamped, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
     }
+
 
     /// <summary>
     /// Starts a tween for a Vector3 value.
@@ -66,9 +67,9 @@ public static class BTween
     /// <param name="easeFunction">The easing function to use for the tween's progression.</param>
     /// <param name="onCompleteDelay">An optional delay in seconds before invoking the onComplete action.</param>
     /// <returns>A UniTask that completes when the tween is finished or cancelled.</returns>
-    public static UniTask Vector3(object owner, string tweenIdentifierTag, Action<Vector3> setter, Vector3 startValue, Vector3 endValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    public static UniTask Vector3(object owner, string tweenIdentifierTag, Action<Vector3> setter, Vector3 startValue, Vector3 endValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
     {
-        return StartTween(owner, tweenIdentifierTag, startValue, endValue, duration, setter, UnityEngine.Vector3.LerpUnclamped, onComplete, easeFunction, onCompleteDelay);
+        return StartTween(owner, tweenIdentifierTag, startValue, endValue, duration, setter, UnityEngine.Vector3.LerpUnclamped, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
     }
 
     /// <summary>
@@ -84,9 +85,9 @@ public static class BTween
     /// <param name="easeFunction">The easing function to use for the tween's progression.</param>
     /// <param name="onCompleteDelay">An optional delay in seconds before invoking the onComplete action.</param>
     /// <returns>A UniTask that completes when the tween is finished or cancelled.</returns>
-    public static UniTask Quaternion(object owner, string tweenIdentifierTag, Action<Quaternion> setter, Quaternion startValue, Quaternion endValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    public static UniTask Quaternion(object owner, string tweenIdentifierTag, Action<Quaternion> setter, Quaternion startValue, Quaternion endValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
     {
-        return StartTween(owner, tweenIdentifierTag, startValue, endValue, duration, setter, UnityEngine.Quaternion.SlerpUnclamped, onComplete, easeFunction, onCompleteDelay);
+        return StartTween(owner, tweenIdentifierTag, startValue, endValue, duration, setter, UnityEngine.Quaternion.SlerpUnclamped, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
     }
 
     /// <summary>
@@ -102,15 +103,15 @@ public static class BTween
     /// <param name="easeFunction">The easing function to use for the tween's progression.</param>
     /// <param name="onCompleteDelay">An optional delay in seconds before invoking the onComplete action.</param>
     /// <returns>A UniTask that completes when the tween is finished or cancelled.</returns>
-    public static UniTask Color(object owner, string tweenIdentifierTag, Action<Color> setter, Color startValue, Color endValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f)
+    public static UniTask Color(object owner, string tweenIdentifierTag, Action<Color> setter, Color startValue, Color endValue, float duration, Action onComplete = null, Func<float, float> easeFunction = null, float onCompleteDelay = 0f, bool ignoreTimeScale = false)
     {
-        return StartTween(owner, tweenIdentifierTag, startValue, endValue, duration, setter, UnityEngine.Color.LerpUnclamped, onComplete, easeFunction, onCompleteDelay);
+        return StartTween(owner, tweenIdentifierTag, startValue, endValue, duration, setter, UnityEngine.Color.LerpUnclamped, onComplete, easeFunction, onCompleteDelay, ignoreTimeScale);
     }
 
     /// <summary>
     /// The internal generic method that sets up and starts any tween. It handles tween cancellation, lifecycle management, and invokes the async tweening logic.
     /// </summary>
-    private static UniTask StartTween<T>(object owner, string tweenIdentifierTag, T startValue, T endValue, float duration, Action<T> setter, Func<T, T, float, T> interpolator, Action onComplete, Func<float, float> easeFunction, float onCompleteDelay)
+    private static UniTask StartTween<T>(object owner, string tweenIdentifierTag, T startValue, T endValue, float duration, Action<T> setter, Func<T, T, float, T> interpolator, Action onComplete, Func<float, float> easeFunction, float onCompleteDelay, bool ignoreTimeScale)
     {
         var key = CreateKey(owner, tweenIdentifierTag);
         StopTweenForKey(key);
@@ -122,21 +123,28 @@ public static class BTween
             return UniTask.CompletedTask;
         }
 
+        // Create a main token source for the object's lifetime.
         var mainCts = new CancellationTokenSource();
+        
+        // Create a linked token source for this specific tween operation.
         var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(mainCts.Token);
 
         if (owner is Component ownerAsComponent)
         {
+            // Register the MAIN token to be cancelled on destroy. This method is void.
             mainCts.RegisterRaiseCancelOnDestroy(ownerAsComponent);
         }
         else if (owner is GameObject ownerAsGameObject)
         {
+            // Register the MAIN token to be cancelled on destroy. This method is void.
             mainCts.RegisterRaiseCancelOnDestroy(ownerAsGameObject);
         }
 
+        // Store both the linked and main CTS. This now matches the dictionary type.
         _activeTweens[key] = Tuple.Create(linkedCts, mainCts);
         
-        return TweenValueAsync(key, startValue, endValue, duration, setter, interpolator, onComplete, easeFunction, onCompleteDelay, linkedCts);
+        // Pass the LINKED CTS to the async method.
+        return TweenValueAsync(key, startValue, endValue, duration, setter, interpolator, onComplete, easeFunction, onCompleteDelay, linkedCts, ignoreTimeScale);
     }
     
     private static void StopTweenForKey(Tuple<object, string> key)
@@ -165,7 +173,7 @@ public static class BTween
     Tuple<object, string> key, T from, T to, float duration,
     Action<T> setter, Func<T, T, float, T> interpolator,
     Action onComplete, Func<float, float> easeFunction,
-    float onCompleteDelay, CancellationTokenSource cts)
+    float onCompleteDelay, CancellationTokenSource cts, bool ignoreTimeScale)
     {
         float elapsedTime = 0f;
         easeFunction ??= Ease.Linear;
@@ -177,7 +185,9 @@ public static class BTween
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                elapsedTime += Time.deltaTime;
+                // Use unscaledDeltaTime if ignoreTimeScale is true
+                elapsedTime += ignoreTimeScale ? Time.unscaledDeltaTime : Time.deltaTime;
+                
                 float progress = Mathf.Clamp01(elapsedTime / duration);
                 float easedProgress = easeFunction(progress);
                 
@@ -192,23 +202,24 @@ public static class BTween
             {
                 if (onCompleteDelay > 0f)
                 {
-                    await UniTask.Delay(TimeSpan.FromSeconds(onCompleteDelay), ignoreTimeScale: false, delayTiming: PlayerLoopTiming.Update, cancellationToken: cancellationToken);
+                    // Pass ignoreTimeScale to the delay
+                    await UniTask.Delay(TimeSpan.FromSeconds(onCompleteDelay), ignoreTimeScale: ignoreTimeScale, delayTiming: PlayerLoopTiming.Update, cancellationToken: cancellationToken);
                 }
                 onComplete.Invoke();
             }
         }
         catch (OperationCanceledException)
         {
-            // This is expected when a tween is stopped or the owner is destroyed.
+            // Expected when a tween is stopped or the owner is destroyed.
         }
         finally
         {
             if (_activeTweens.TryGetValue(key, out var context) && context.Item1 == cts)
             {
                 _activeTweens.Remove(key);
+                context.Item2?.Dispose();
+                context.Item1.Dispose();
             }
-            
-            cts.Dispose();
         }
     }
 
